@@ -1,4 +1,7 @@
+from typing import Optional
+
 from pydantic import BaseModel,  constr, EmailStr
+from decimal import Decimal
 
 class UserCreate(BaseModel):
     name: str
@@ -12,16 +15,14 @@ class UserLogin(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
-    price: int
+    price: Decimal
     stock: int
     description:str
 
-class OrderCreate(BaseModel):
-    user_id: int
-    total_price: int
-    status: str
-
 class OrderItemCreate(BaseModel):
-     order_id: int
-     product_id: int
-     quantity: int
+    product_id: int
+    quantity: int
+    price: Optional[Decimal] = None
+
+class OrderCreate(BaseModel):
+    items: list[OrderItemCreate]
