@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel,  constr, EmailStr
+from pydantic import BaseModel, EmailStr
 from decimal import Decimal
 
 class UserCreate(BaseModel):

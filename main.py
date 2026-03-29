@@ -1,5 +1,3 @@
-import email
-
 from fastapi import FastAPI, Depends, HTTPException
 import models, schemas, crud
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -46,8 +44,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/Protected")
-def protected_route(token: str = Depends(oauth2_scheme)):
-    return {"token": token}
+def protected_route(current_user: models.User = Depends(get_current_user)):
+    return {
+        "messagee": "Access granted",
+        "user": {
+            "id" : current_user.id,
+            "email": current_user.email,
+            "name": current_user.name
+        }
+    }
 
 @app.post("/products")
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
