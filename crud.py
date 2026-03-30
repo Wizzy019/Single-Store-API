@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 from auth import hash_password, verify_password
 import models
 
-def create_user(db:Session, name:str, email:str, password:str):
+def create_user(db:Session, name:str, email:str, password:str, role:str):
     hashed = hash_password(password)
-    user = models.User(name=name, email=email, hashed_password=hashed)
+    user = models.User(name=name, email=email, hashed_password=hashed, role="user")
 
     existing = db.query(models.User).filter(models.User.email == email).first()
     if existing:
