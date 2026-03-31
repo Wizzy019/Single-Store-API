@@ -5,7 +5,7 @@ import models
 
 def create_user(db:Session, name:str, email:str, password:str, role:str):
     hashed = hash_password(password)
-    user = models.User(name=name, email=email, hashed_password=hashed, role="user")
+    user = models.User(name=name, email=email, hashed_password=hashed, role=role)
 
     existing = db.query(models.User).filter(models.User.email == email).first()
     if existing:
