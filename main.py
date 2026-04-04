@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import models, schemas, crud
 from fastapi.security import OAuth2PasswordRequestForm
 from database import engine, get_db
@@ -8,7 +9,15 @@ from auth import create_access_token, admin_only, user_only, get_current_user
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)    
+models.Base.metadata.create_all(bind=engine) 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # for now, allow all origins (dev). Later restrict to your domain.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/signup")
 def signup(user: schemas.UserCreate, db:Session = Depends(get_db)):
