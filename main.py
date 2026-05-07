@@ -13,7 +13,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # for now, allow all origins (dev). Later restrict to your domain.
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,6 +24,15 @@ def signup(user: schemas.UserCreate, db:Session = Depends(get_db)):
     created = crud.create_user(db, user.name, user.email, user.password, user.role)
     if created is None:
         raise HTTPException(status_code=400, detail="Email already registered")
+    return created
+
+@app.post("/register-admin", dependencies=[Depends(admin_only)])
+def register_admin(user: schemas.UserCreate, db:Session = Depends(get_db)):
+    created = crud.create_admin(db, user.name, user.email, user.password)
+
+    if created is None:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
     return created
 
 @app.post("/login")

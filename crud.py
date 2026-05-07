@@ -16,6 +16,27 @@ def create_user(db:Session, name:str, email:str, password:str, role:str):
     db.refresh(user)
     return user
 
+def create_admin(db:Session, name:str, email:str, password:str):
+    hashed: hash_password(password)
+
+    admin = models.User(
+        name = name,
+        email = email,
+        hashed_password = hashed,
+        role = "admin"
+    )
+
+    existing = db.query(models.User).filter(models.User.email == email).first()
+    if existing:
+        return None
+    
+
+    db.add(admin)
+    db.commit()
+    db.refresh(admin)
+
+    return admin
+
 def authenticate_user(db, email, password):
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
