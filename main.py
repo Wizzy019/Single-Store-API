@@ -28,7 +28,7 @@ def signup(user: schemas.UserCreate, db:Session = Depends(get_db)):
 
 @app.post("/register-admin", dependencies=[Depends(admin_only)])
 def register_admin(user: schemas.UserCreate, db:Session = Depends(get_db)):
-    created = crud.create_admin(db, user.name, user.email, user.password)
+    created = crud.create_admin(db, user.name, user.email, user.password, user.role)
 
     if created is None:
         raise HTTPException(status_code=400, detail="Email already registered")
