@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from auth import hash_password, verify_password
+from auth.password import hash_password, verify_password
 import models
 
 def create_user(db:Session, name:str, email:str, password:str, role:str):

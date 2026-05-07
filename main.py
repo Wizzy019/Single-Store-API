@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import models, schemas, crud
-from fastapi.security import OAuth2PasswordRequestForm
 from database import engine, get_db
 from sqlalchemy.orm import Session
-from auth import create_access_token, admin_only, user_only, get_current_user
-
+from auth.dependencies import get_current_user, admin_only, user_only
+from routes.auth import router as auth_router
 
 app = FastAPI()
+
+app.include_router(auth_router)
 
 models.Base.metadata.create_all(bind=engine) 
 
@@ -18,32 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.post("/signup")
-def signup(user: schemas.UserCreate, db:Session = Depends(get_db)):
-    created = crud.create_user(db, user.name, user.email, user.password, user.role)
-    if created is None:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return created
-
-@app.post("/register-admin", dependencies=[Depends(admin_only)])
-def register_admin(user: schemas.UserCreate, db:Session = Depends(get_db)):
-    created = crud.create_admin(db, user.name, user.email, user.password, user.role)
-
-    if created is None:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    return created
-
-@app.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = crud.authenticate_user(db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    access_token = create_access_token( data={"sub": user.email,})
-
-    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/Protected")
 def protected_route(current_user: models.User = Depends(get_current_user)):
