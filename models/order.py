@@ -1,25 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DateTime, func
 from sqlalchemy.orm import relationship
-from database import Base
-
-class User(Base):
-    __tablename__ = "single_store_users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    role = Column(String, default="user")
-
-
-class Product(Base):
-    __tablename__ = "single_store_products"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    price = Column(Numeric(10, 2), nullable=False)
-    stock = Column(Integer, nullable=False)
-    description = Column(String, nullable=False)
+from database.connection import Base
 
 
 class Order(Base):
