@@ -10,7 +10,6 @@ def create_user(db:Session, name:str, email:str, password:str, role:str):
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         return None
-    
     db.add(user)
     db.commit()
     db.refresh(user)

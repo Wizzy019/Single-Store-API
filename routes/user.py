@@ -5,7 +5,7 @@ from auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.get("/Protected")
+@router.get("/")
 def protected_route(current_user: User = Depends(get_current_user)):
     return {
         "messagee": "Access granted",

@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from models.products import Product
 from models.order import Order, OrderItem
 
+
+# Post order 
 def create_order(db: Session, user_id: int, order_items: list):
     total_price = 0
 
@@ -43,3 +45,11 @@ def create_order(db: Session, user_id: int, order_items: list):
     db.commit()
     db.refresh(new_order)
     return new_order
+
+# get order (admin)
+def get_orders(db):
+    return db.query(Order).all()
+
+# get order (user) 
+def get_order(db, user_id: int):
+    return db.query(Order).filter(Order.user_id == user_id).first()
